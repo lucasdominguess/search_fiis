@@ -5,8 +5,6 @@ use App\classes\CreateLogger;
 require 'vendor/autoload.php';
 require 'config.php';
 
-
-
 $searchFII = new App\classes\searchFII();
 $bot = new CreateLogger();
 
@@ -23,11 +21,8 @@ $tickets = [
             $dataArray[$ticket[0]] = $data;
             $hora = date('H:i', strtotime($data['last_update']));
 
-     $msg .= "\n{$ticket[0]} - \nValor: {$data['price']} - \nHora: {$hora}\n";
-
+            $msg .= "\n{$ticket[0]} - \nValor: {$data['price']} - \nHora: {$hora}\n";
         }
-
-        print_r($msg);
-
         $bot->loggerTelegram('',$msg,'info');
+        print_r($msg);
 
