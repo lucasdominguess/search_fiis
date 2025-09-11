@@ -42,28 +42,23 @@ class searchFII extends Dependencies
     $res = $this->Client->sendAsync($request, $options)->wait();
    
     $data = json_decode($res->getBody());
-    // $this->log->loggerCSV("Sucesso_busca_fii","Busca realizada com sucesso para o ticker {$ticker}",'','');
-    // $this->log->loggerTelegram("","Valor atual R$: {$data->price}");
-    // print_r($data);
     return [
         'price' => $data->price,
         'last_update' => $data->last_update
     ];
-
     } catch (\Exception $e) {
     echo 'erro: ', $e->getMessage(), "\n";
     exit;
 }
 }
-public function searchFII_statusInvest(string $ticket)
+public function searchFII_rangeDate(string $ticket,int|string $ticket_id,string $days='30')
 {
     $env = $this->env;
-    $url = $env['URL_STATUS_INVEST'];
+    $urlPart = "$ticket_id/{$days}/real/adjusted/true";
+    $url = $env['URL_RANGE_DATE'];
+    $url = "{$url}{$urlPart}";
 
-        $headers = [
-        'Cookie' => '_adasys=16b7ac60-cbad-477a-9e30-e0c8dc34fcf0'
-        ];
-        $options = [
+    $options = [
         'multipart' => [
             [
             'name' => 'ticker',
@@ -78,11 +73,18 @@ public function searchFII_statusInvest(string $ticket)
             'contents' => '1'
             ]
         ]];
-    $request = new Request('POST', $url);
-    $res = $this->Client->sendAsync($request, $options)->wait();
-    $data = json_decode($res->getBody());
+    try {
+        $request = new Request('GET', $url);
+        $res = $this->Client->sendAsync($request, $options)->wait();
+        $data = json_decode($res->getBody());
 
-    print_r($data);
-    return $data;
+        $msg = "Histórico do Ativo $ticket( $days dias) :\n";
+            foreach ($data->real as  $value) {
+                $msg .= "{$value->created_at} - Preço: {$value->price}\n";
             }
+    } catch (\Throwable $th) {
+        print_r('Erro:'.$th);
+    }
+    return $msg;
+    }
 }
