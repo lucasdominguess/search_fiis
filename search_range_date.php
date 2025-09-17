@@ -18,10 +18,10 @@ $tickets = [
 $msg = '';
 $dataArray = [];
 foreach ($tickets as $ticket) {
-    $msg = $searchFII->searchFII_rangeDate($ticket[0], $ticket[1], '7');
+    $msg = $searchFII->searchFII_rangeDate($ticket[0], $ticket[1], '30');
 
     try {
-        $bot->loggerTelegram('', $msg, 'info');
+        $bot->loggerTelegram('', $msg, 'info', $channel);
     } catch (\Throwable $th) {
         $bot->loggerTelegram('', $th->getMessage(), 'error');
     }
