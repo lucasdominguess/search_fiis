@@ -1,12 +1,12 @@
 <?php
-
-use App\classes\CreateLogger;
-
 require 'vendor/autoload.php';
 require 'config.php';
 
-$searchFII = new App\classes\searchFII();
+use App\classes\SearchFII;
+use App\classes\CreateLogger;
+
 $bot = new CreateLogger();
+$searchFII = new SearchFII();
 
 $tickets = [
             ['VGIR11',59,'fii'],
@@ -23,6 +23,10 @@ $tickets = [
 
             $msg .= "\n{$ticket[0]} - \nValor: {$data['price']} - \nHora: {$hora}\n";
         }
-        $bot->loggerTelegram('',$msg,'info');
-        print_r($msg);
+        try {
+            $bot->loggerTelegram('',$msg,'info');
+            print_r($msg);
+        } catch (\Throwable $th) {
+            print_r($th);
+        }
 

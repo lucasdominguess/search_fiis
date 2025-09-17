@@ -4,7 +4,7 @@ namespace App\classes;
 use GuzzleHttp\Psr7\Request;
 use App\classes\Dependencies;
 
-class searchFII extends Dependencies
+class SearchFII extends Dependencies
 {
     public function __construct()
     {
