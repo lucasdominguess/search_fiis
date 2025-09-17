@@ -57,23 +57,15 @@ class CreateLogger {
 * @param string $nivel Nivel do log setado por padrao WARNING 
 * @param array|string $extra Conteudo extra (opcional) enviando com pushProcessor , setado como null por padrao
 **/
-    public function loggerTelegram(string $title ,string $msg, string $nivel = 'warning', array|string $extra = null){
+    public function loggerTelegram(string $title ,string $msg, string $nivel = 'warning',  $channel = null,$apikey = null,) {
         try {
 
             $env = ENV;
-            $apikey = $env['API_KEY'];
-            $channel = $env['CHANNEL'];
+            $apikey ??= $env['API_KEY'];
+            $channel ??= $env['CHANNEL'];
             $ftitle = strtoupper(str_replace([' ','.','-'],'_',$title));
             $logger = new Logger(strtoupper($ftitle)
         );
-            
-            // if ($extra !== null) {
-
-            //     $logger->pushProcessor(function ($record) use ($extra) { 
-            //         $record["extra"]["server"] = $extra ;
-            //         return $record ;
-            //     });
-            // }
             $handler = new TelegramBotHandler(
                 apiKey: $apikey,
                 channel: $channel,
@@ -83,20 +75,14 @@ class CreateLogger {
             $handler->setFormatter($formatter);
 
             $logger->pushHandler($handler);
-            // $this->loggerCSV($title,$msg,$nivel);
-            // if ($sendEmail) {
-            //     $this->loggerEmail($title,$msg,$env['email_log']);
-            // }
+          
             $logger->$nivel($msg);
             
         } catch (\Throwable $th) {
             $this->loggerCSV('Erro_logTelegram','Tentativa de criar Log Telegran falhou :'.$th->getMessage(),'error',null);
             throw new Exception('Erro ao criar LogTelegran');
         }
-        
-       
     
-
 }  
 /**
  * @method mixed loggerEmail() Envia um email para o desenvolvedor responsavel com erro Critico
