@@ -9,10 +9,12 @@ $bot = new CreateLogger();
 $searchFII = new SearchFII();
 
 $tickets = [
-    ['VGIR11', 59, 'fii', 0.12],
-    ['WHGR11', 425, 'fii', 0.10],
-    ['VGHF11', 222, 'fii', 0.09],
+    ['VGIR11', 59, 'fii', 0.13],
+   # ['WHGR11', 425, 'fii', 0.10],
+   # ['VGHF11', 222, 'fii', 0.08],
     ['PETR4', 4, 'acao', 0.63],
+    ['BPML11', 163, 'fii']
+
 ];
 $msg = '';
 $dataArray = [];

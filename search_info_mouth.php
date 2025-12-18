@@ -11,16 +11,16 @@ $env = ENV;
 $channel = $env['CHANNEL02'];
 
 $tickets = [
-    ['VGIR11', 59, 'fii'],
-    // ['BPML11', 163, 'fii'],
-    // ['HCTR11', 53, 'fii'],
-    // ['WHGR11', 425, 'fii'],
-    // ['VGHF11', 222, 'fii'],
+   ['VGIR11', 59, 'fii', 0.13],
+   # ['WHGR11', 425, 'fii', 0.10],
+   # ['VGHF11', 222, 'fii', 0.08],
+    ['PETR4', 4, 'acao', 0.63],
+    ['BPML11', 163, 'fii']
 ];
 $msg = '';
 $dataArray = [];
 foreach ($tickets as $ticket) {
-    $msg = $searchFII->searchFII_rangeDate($ticket[0], $ticket[1], '30');
+    $msg = $searchFII->searchFII_rangeDate($ticket[0], $ticket[1]);
 
     try {
         $bot->loggerTelegram('', $msg, 'info', $channel);
