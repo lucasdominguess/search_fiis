@@ -12,8 +12,10 @@ $channel = $env['CHANNEL02'];
 
 $tickets = [
     ['VGIR11', 59, 'fii'],
-    ['WHGR11', 425, 'fii'],
-    ['VGHF11', 222, 'fii'],
+    // ['BPML11', 163, 'fii'],
+    // ['HCTR11', 53, 'fii'],
+    // ['WHGR11', 425, 'fii'],
+    // ['VGHF11', 222, 'fii'],
 ];
 $msg = '';
 $dataArray = [];

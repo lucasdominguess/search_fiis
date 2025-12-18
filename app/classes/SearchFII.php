@@ -111,4 +111,27 @@ class SearchFII extends Dependencies
         }
         return $msg;
     }
+public function calcPercent(int|string $primaryValue,int|string $secondValue)
+{
+    // $client = new Client();
+$options = [
+  'multipart' => [
+    [
+      'name' => 'num1',
+      'contents' => $primaryValue
+    ],
+    [
+      'name' => 'num2',
+      'contents' => $secondValue
+    ],
+    [
+      'name' => 'acao',
+      'contents' => 'porcentagem2'
+    ]
+]];
+$request = new Request('POST', 'https://www.4devs.com.br/ferramentas_matematica.php');
+$res = $this->Client->sendAsync($request, $options)->wait();
+return json_decode($res->getBody());
+}
+
 }
