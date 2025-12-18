@@ -16,6 +16,10 @@ $tickets = [
     ['BPML11', 163, 'fii']
 
 ];
+
+$price_alvo=9.45;
+$channel02 = ENV['CHANNEL02'];
+
 $msg = '';
 $dataArray = [];
 foreach ($tickets as $ticket) {
@@ -27,7 +31,10 @@ foreach ($tickets as $ticket) {
     $dividendo = (float) $ticket[3];
     $percentual = $preco > 0 ? ($dividendo / $preco) * 100 : 0;
 
-
+    if($preco <= $price_alvo && $ticket[0] =='VGIR11'){
+        $msg_preco = "Preço alvo atingido para VGIR11 . preço atual: $preco";
+        $bot->loggerTelegram("", $msg_preco, 'WARNING', $channel02);
+    }
 
     $msg .= "\n{$ticket[0]} - 
 Valor: {$preco} 
