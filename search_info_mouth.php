@@ -15,12 +15,13 @@ $tickets = [
    # ['WHGR11', 425, 'fii', 0.10],
    # ['VGHF11', 222, 'fii', 0.08],
     ['PETR4', 4, 'acao', 0.63],
-    ['VGRI11', 559, 'fii', 0.12]
+    ['VGRI11', 559, 'fii', 0.12],
+    ['GGRC11', 35, 'fii', 0.10]
 ];
 $msg = '';
 $dataArray = [];
 foreach ($tickets as $ticket) {
-    $msg = $searchFII->searchFII_rangeDate($ticket[0], $ticket[1]);
+    $msg = $searchFII->searchFII_rangeDate($ticket[0], $ticket[1],'60');
 
     try {
         $bot->loggerTelegram('', $msg, 'info', $channel);
