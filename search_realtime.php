@@ -8,44 +8,110 @@ use App\classes\CreateLogger;
 $bot = new CreateLogger();
 $searchFII = new SearchFII();
 
+/*
+|--------------------------------------------------------------------------
+| Função que define o emoji da tendência
+|--------------------------------------------------------------------------
+*/
+function trendEmoji(?float $old, float $current): array
+{
+    if ($old === null) return ['🆕', 0];
+
+    $diff = $current - $old;
+
+    if ($diff > 0) return ['📈', $diff];
+    if ($diff < 0) return ['📉', $diff];
+
+    return ['➖', 0];
+}
+
 $tickets = [
     ['VGIR11', 59, 'fii', 0.13],
-   # ['WHGR11', 425, 'fii', 0.10],
-   # ['VGHF11', 222, 'fii', 0.08],
     ['PETR4', 4, 'acao', 0.63],
     ['VGRI11', 559, 'fii', 0.12],
-     ['GGRC11', 35, 'fii', 0.10]
-
+    ['GGRC11', 35, 'fii', 0.10]
 ];
 
-$price_alvo=9.45;
 $channel02 = ENV['CHANNEL02'];
 
-$msg = '';
-$dataArray = [];
-foreach ($tickets as $ticket) {
-    $data = $searchFII->searchFII_Investidor10($ticket[0], $ticket[1], $ticket[2]);
-    $dataArray[$ticket[0]] = $data;
-    $hora = date('H:i', strtotime($data['last_update']));
+$msg = " \n";
 
+foreach ($tickets as $ticket) {
+
+    $data = $searchFII->searchFII_Investidor10($ticket[0], $ticket[1], $ticket[2]);
+
+    $hora = date('H:i', strtotime($data['last_update']));
     $preco = (float) $data['price'];
     $dividendo = (float) $ticket[3];
+
     $percentual = $preco > 0 ? ($dividendo / $preco) * 100 : 0;
 
-    if($preco <= $price_alvo && $ticket[0] =='VGIR11'){
-        $msg_preco = "Preço alvo atingido para VGIR11 . preço atual: $preco";
-        $bot->loggerTelegram("", $msg_preco, 'WARNING', $channel02);
+    /*
+    |--------------------------------------------------------------------------
+    | LER PREÇO ANTERIOR
+    |--------------------------------------------------------------------------
+    */
+    $file = __DIR__ . "/storage/{$ticket[0]}.json";
+    $precoAnterior = null;
+
+    if (file_exists($file)) {
+        $oldData = json_decode(file_get_contents($file), true);
+        if (isset($oldData['price'])) {
+            $precoAnterior = (float) $oldData['price'];
+        }
     }
 
-    $msg .= "\n{$ticket[0]} - 
-Valor: {$preco} 
-Hora: {$hora}
-Dividendo: {$dividendo} (" . number_format($percentual, 2, ',', '.') . "%)\n";
+    /*
+    |--------------------------------------------------------------------------
+    | DESCOBRIR TENDÊNCIA
+    |--------------------------------------------------------------------------
+    */
+    [$emojiTrend, $diff] = trendEmoji($precoAnterior, $preco);
+
+    $variacao = $precoAnterior !== null
+        ? number_format($diff, 2, ',', '.')
+        : null;
+
+    /*
+    |--------------------------------------------------------------------------
+    | MONTAR MENSAGEM
+    |--------------------------------------------------------------------------
+    */
+    $msg .= "📊 {$ticket[0]}\n";
+    $msg .= "💰 Preço: R$ ".number_format($preco, 2, ',', '.')." {$emojiTrend}\n";
+
+    if ($precoAnterior !== null) {
+        $msg .= "🔄 Variação: {$variacao}\n";
+    } else {
+        $msg .= "🆕 Primeiro registro\n";
+    }
+
+    $msg .= "🕐 Hora: {$hora}\n";
+    $msg .= "💸 Dividendo: R$ ".number_format($dividendo, 2, ',', '.').
+            " (".number_format($percentual, 2, ',', '.')."%)\n\n";
+
+    /*
+    |--------------------------------------------------------------------------
+    | SALVAR NOVO PREÇO
+    |--------------------------------------------------------------------------
+    */
+    if (!is_dir(__DIR__ . "/storage")) {
+        mkdir(__DIR__ . "/storage", 0777, true);
+    }
+
+    file_put_contents($file, json_encode([
+        'price' => $preco,
+        'time'  => date('Y-m-d H:i:s')
+    ]));
 }
+
 try {
-    $bot->loggerTelegram('', $msg, 'info');
-    print_r($msg);
+    // enviar ao telegram
+    $bot->loggerTelegram('', $msg, 'INFO', $channel02);
+
+    // debug opcional
+    echo $msg;
+
 } catch (\Throwable $th) {
     print_r($th);
 }
-
