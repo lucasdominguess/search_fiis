@@ -39,12 +39,13 @@ $msg = " \n";
 foreach ($tickets as $ticket) {
 
     $data = $searchFII->searchFII_Investidor10($ticket[0], $ticket[1], $ticket[2]);
+    $lastDividend = $searchFII->getLastDIvidend($ticket[1],30);
 
     $hora = date('H:i', strtotime($data['last_update']));
     $preco = (float) $data['price'];
-    $dividendo = (float) $ticket[3];
+    $lastDividend = (float) $lastDividend[0]->price;
 
-    $percentual = $preco > 0 ? ($dividendo / $preco) * 100 : 0;
+    $percentual = $preco > 0 ? ($lastDividend / $preco) * 100 : 0;
 
     /*
     |--------------------------------------------------------------------------
@@ -87,7 +88,7 @@ foreach ($tickets as $ticket) {
     }
 
     $msg .= "🕐 Hora: {$hora}\n";
-    $msg .= "💸 Dividendo: R$ ".number_format($dividendo, 2, ',', '.').
+    $msg .= "💸 lastDividend: R$ ".number_format($lastDividend, 2, ',', '.').
             " (".number_format($percentual, 2, ',', '.')."%)\n\n";
 
     /*

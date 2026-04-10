@@ -134,4 +134,14 @@ $res = $this->Client->sendAsync($request, $options)->wait();
 return json_decode($res->getBody());
 }
 
+public function getLastDIvidend(string|int $codeFii,int $month)
+{
+            $url = $this->env['URL_LAST_DIVIDENDS'];
+            $url = "{$url}{$codeFii}/{$month}/mes";
+            $request = new Request('GET', $url);
+            $res = $this->Client->sendAsync($request)->wait();
+            $data = json_decode($res->getBody());
+            return (array) $data;
+}
+
 }
