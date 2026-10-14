@@ -29,7 +29,8 @@ $tickets = [
     ['VGIR11', 59, 'fii', 0.13],
     ['PETR4', 4, 'acao', 0.63],
     ['VGRI11', 559, 'fii', 0.12],
-    ['GGRC11', 35, 'fii', 0.10]
+    ['GGRC11', 35, 'fii', 0.10],
+    ['DIVO11',13,'etf',0]
 ];
 
 $channel02 = ENV['CHANNEL02'];

@@ -19,6 +19,9 @@ class SearchFII extends Dependencies
         if ($typeTicket == 'acao') {
             $url = "{$env['URL_ACAO_INV10']}/$ticker_id";
         }
+        if ($typeTicket == 'etf') {
+            $url = "{$env['URL_ETF_INV10']}/$ticker_id";
+        }
         try {
             $this->Client;
             $options = [
